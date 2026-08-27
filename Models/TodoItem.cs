@@ -1,6 +1,8 @@
+using ToDoApp.Enums;
+
 namespace ToDoApp.Models;
 
-public class TodoItem(Guid id, string name, bool isDone, DateTime created, DateTime? updated)
+public class TodoItem(Guid id, string name, TodoStatus status, DateTime created, DateTime? updated)
 {
     /// <summary>
     /// The unique identifier of the TodoItem.
@@ -13,9 +15,9 @@ public class TodoItem(Guid id, string name, bool isDone, DateTime created, DateT
     public string Name { get; private set; } = name;
 
     /// <summary>
-    /// Whether the TodoItem is marked as done.
+    /// The status of the TodoItem.
     /// </summary>
-    public bool IsDone { get; private set; } = isDone;
+    public TodoStatus Status { get; private set; } = status;
 
     /// <summary>
     /// When the TodoItem was created.
