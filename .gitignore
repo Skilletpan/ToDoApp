@@ -202,7 +202,9 @@ __pycache__/
 # Windows thumbnail cache files
 Thumbs.db
 
-# Envs
+# Envs and Configs
 .env
 .env.*
 !.env.example
+
+appsettings.*.json
