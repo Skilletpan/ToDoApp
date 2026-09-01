@@ -9,6 +9,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
+builder.Services.AddSingleton<TodoService>();
 
 var app = builder.Build();
 
