@@ -19,7 +19,7 @@ public class TodoService(IDatabaseService databaseService) : BaseModelService<To
         return await CreateModel(values);
     }
 
-    public async Task<int> UpdateTodo(Guid id, string? name, TodoStatus? status)
+    public async Task<int> UpdateTodo(TodoModel todo, string? name, TodoStatus? status)
     {
         // Set Todo values to update
         var values = new Dictionary<string, object>();
@@ -27,7 +27,12 @@ public class TodoService(IDatabaseService databaseService) : BaseModelService<To
         if (status != null) values.Add("status", status);
 
         // Update Todo
-        return await UpdateModel(id, values);
+        return await UpdateModel(todo.ID, values);
+    }
+
+    public async Task<int> DeleteTodo(TodoModel todo)
+    {
+        return 1;
     }
 
     public async Task<List<TodoModel>> FetchAllTodos()
