@@ -22,4 +22,9 @@ public abstract class BaseModel(Guid id, DateTime created, DateTime? updated = n
     /// The date and time when the Model item was last updated.
     /// </summary>
     public DateTime? Updated { get; } = updated;
+
+    /// <summary>
+    /// The date and time when the Model item was last changed (created or updated).
+    /// </summary>
+    public DateTime Changed => Updated ?? Created;
 }
