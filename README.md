@@ -5,8 +5,10 @@ This is a small proof-of-concept to demonstrate common CRUD-operations (Create, 
 To run the project, use the following commands:
 
 ```sh
+# Start database container
 docker compose up -d
 
+# Start application
 dotnet watch
 ```
 
