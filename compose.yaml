@@ -1,0 +1,12 @@
+name: blazor-todo
+
+services:
+
+  mariadb:
+    image: mariadb:latest
+
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Please add DB_ROOT_PASSWORD to your environment!}
+
+    ports:
+      - ${DB_PORT:-3306}:3306
