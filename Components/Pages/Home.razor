@@ -1,7 +1,35 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Blazor: To Do</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Blazor: To Do</h1>
 
-Welcome to your new app.
+<!-- Todos Table -->
+<table class="table table-bordered table-striped">
+    <!-- Column Headers -->
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Changed</th>
+        </tr>
+    </thead>
+
+    <!-- Body with Todo Items -->
+    <tbody>
+        @foreach (var todoItem in todoItems)
+        {
+            <!-- Todo Item Row -->
+            <tr>
+                <td>@todoItem.ID</td>
+                <td>@todoItem.Name</td>
+                <td>@todoItem.Status</td>
+                <td>@todoItem.Created.ToLocalTime().ToString("dd.MM.yyyy, hh:mm")</td>
+                <td>@todoItem.Changed.ToLocalTime().ToString("dd.MM.yyyy, hh:mm")</td>
+            </tr>
+        }
+    </tbody>
+</table>
