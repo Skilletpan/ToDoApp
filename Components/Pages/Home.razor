@@ -1,35 +1,86 @@
 ﻿@page "/"
 @rendermode InteractiveServer
 
+@using ToDoApp.Enums;
+
 <PageTitle>Blazor: To Do</PageTitle>
 
-<h1>Blazor: To Do</h1>
+<div class="container-fluid">
+    <h1>Blazor: To Do</h1>
 
-<!-- Todos Table -->
-<table class="table table-bordered table-striped">
-    <!-- Column Headers -->
-    <thead class="table-dark">
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Status</th>
-            <th>Created</th>
-            <th>Changed</th>
-        </tr>
-    </thead>
+    <hr />
 
-    <!-- Body with Todo Items -->
-    <tbody>
-        @foreach (var todoItem in todoItems)
-        {
-            <!-- Todo Item Row -->
-            <tr>
-                <td>@todoItem.ID</td>
-                <td>@todoItem.Name</td>
-                <td>@todoItem.Status</td>
-                <td>@todoItem.Created.ToLocalTime().ToString("dd.MM.yyyy, hh:mm")</td>
-                <td>@todoItem.Changed.ToLocalTime().ToString("dd.MM.yyyy, hh:mm")</td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div class="row">
+        <!-- To Do Editor -->
+        <div class="col-sm-3">
+            <div class="card">
+                <!-- Card Header -->
+                <div class="card-header">Add To Do</div>
+
+                <!-- Card Body -->
+                <form id="todo-editor" class="card-body">
+                    <!-- Name Input -->
+                    <div class="input-group mb-2">
+                        <span class="input-group-text">Name</span>
+                        <input type="text" class="form-control" />
+                    </div>
+
+                    <!-- Status Select -->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Status</span>
+                        <select class="form-control">
+                            @foreach (var status in Enum.GetNames(typeof(TodoStatus)))
+                            {
+                                <option>@status</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="row">
+                        <!-- Reset Form -->
+                        <div class="col">
+                            <button class="form-control btn btn-outline-danger" type="reset">Reset</button>
+                        </div>
+
+                        <!-- Submit Form -->
+                        <div class="col">
+                            <button class="form-control btn btn-primary" type="submit">Add</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Todos Table -->
+        <div class="col-sm-9">
+            <table class="table table-bordered table-striped">
+                <!-- Column Headers -->
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Changed</th>
+                    </tr>
+                </thead>
+
+                <!-- Body with Todo Items -->
+                <tbody>
+                    @foreach (var todoItem in todoItems)
+                    {
+                        <!-- Todo Item Row -->
+                        <tr>
+                            <td>@todoItem.ID</td>
+                            <td>@todoItem.Name</td>
+                            <td>@todoItem.Status</td>
+                            <td>@todoItem.Created.ToLocalTime().ToString("dd.MM.yyyy, hh:mm")</td>
+                            <td>@todoItem.Changed.ToLocalTime().ToString("dd.MM.yyyy, hh:mm")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
