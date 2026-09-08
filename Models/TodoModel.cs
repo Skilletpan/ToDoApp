@@ -1,4 +1,5 @@
 using ToDoApp.Enums;
+using ToDoApp.Models.DTOs;
 
 namespace ToDoApp.Models;
 
@@ -21,4 +22,6 @@ public class TodoModel(Guid id, string name, TodoStatus status, DateTime created
     /// The status of the Todo item.
     /// </summary>
     public TodoStatus Status { get; } = status;
+
+    public override TodoModelDTO CreateDTO() => new(this);
 }

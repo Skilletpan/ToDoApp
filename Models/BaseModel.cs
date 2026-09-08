@@ -1,3 +1,5 @@
+using ToDoApp.Models.DTOs;
+
 namespace ToDoApp.Models;
 
 /// <summary>
@@ -27,4 +29,10 @@ public abstract class BaseModel(Guid id, DateTime created, DateTime? updated = n
     /// The date and time when the Model item was last changed (created or updated).
     /// </summary>
     public DateTime Changed => Updated ?? Created;
+
+    /// <summary>
+    /// Creates a writable DTO representation of the Model item with the current values.
+    /// </summary>
+    /// <returns>A writable DTO representation of the Model item.</returns>
+    public abstract BaseModelDTO CreateDTO();
 }
