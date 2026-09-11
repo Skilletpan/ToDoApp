@@ -1,6 +1,6 @@
 namespace ToDoApp.Models.DTOs;
 
-public abstract class BaseModelDTO(BaseModel? source = null)
+public abstract class BaseDTO(BaseModel? source = null)
 {
     /// <summary>
     /// The unique identifier of the Model item.

@@ -1,37 +1,34 @@
-using ToDoApp.Enums;
 using ToDoApp.Models;
+using ToDoApp.Models.DTOs;
 
 namespace ToDoApp.Services.Interfaces;
 
 public interface ITodoService
 {
     /// <summary>
-    /// Adds a new Todo item to the database.
+    /// Creates a new Todo item in the database. If the <c>dto</c> has an ID, the database will run an <c>UPDATE</c> command, otherwise it will run an <c>INSERT</c> command.
     /// </summary>
-    /// <param name="name">The display name of the new Todo item.</param>
-    /// <param name="status">The initial status of the new Todo item.</param>
-    /// <returns>The amount of database rows affected. Should return <c>1</c> if the operation was successful.</returns>
-    public Task<int> CreateTodo(string name, TodoStatus status = TodoStatus.Open);
-
-    /// <summary>
-    /// Updates a Todo item in the database.
-    /// </summary>
-    /// <param name="todo">The Todo item to update.</param>
-    /// <param name="newName">The new display name to set for the Todo item.</param>
-    /// <param name="newStatus">The new status to set for the Todo item.</param>
-    /// <returns>The amount of database rows affected. Should return <c>1</c> if the operation was successful.</returns>
-    public Task<int> UpdateTodo(TodoModel todo, string? newName = null, TodoStatus? newStatus = null);
+    /// <param name="dto">A DTO holding the values to set for the Todo item.</param>
+    /// <returns>The amount of rows affected by the operation. Should return <c>1</c> if the operation succeeded.</returns>
+    public Task<int> SaveTodo(TodoDTO dto);
 
     /// <summary>
     /// Deletes a Todo item from the database.
     /// </summary>
-    /// <param name="todo">The Todo item to delete.</param>
-    /// <returns>The amount of database rows affected. Should return <c>1</c> if the operation was successful.</returns>
-    public Task<int> DeleteTodo(TodoModel todo);
+    /// <param name="id">The unique ID of the Todo item to delete.</param>
+    /// <returns>The amount of rows affected by the operation. Should return <c>1</c> if the operation succeeded.</returns>
+    public Task<int> DeleteTodo(Guid id);
+
+    /// <summary>
+    /// Looks for a Todo item with the given ID in the database.
+    /// </summary>
+    /// <param name="id">The unique ID of the Todo item to look up.</param>
+    /// <returns>The found Todo item or <c>null</c> if not found.</returns>
+    public Task<TodoModel?> FindTodoById(Guid id);
 
     /// <summary>
     /// Fetches all Todo items from the database.
     /// </summary>
     /// <returns>A list of all Todo items.</returns>
-    public Task<List<TodoModel>> FetchAllTodos();
+    public Task<List<TodoModel>> FetchTodos();
 }

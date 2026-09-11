@@ -13,5 +13,5 @@ public partial class Home(ITodoService todoService)
     /// <summary>
     /// Fetches all Todo items from the database.
     /// </summary>
-    protected override async Task OnInitializedAsync() => todoItems = await todoService.FetchAllTodos();
+    protected override async Task OnInitializedAsync() => todoItems = await todoService.FetchTodos();
 }

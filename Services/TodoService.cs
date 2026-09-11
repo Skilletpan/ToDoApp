@@ -1,40 +1,39 @@
-using ToDoApp.Enums;
 using ToDoApp.Models;
+using ToDoApp.Models.DTOs;
 using ToDoApp.Services.Interfaces;
 
 namespace ToDoApp.Services;
 
-public class TodoService(IDatabaseService databaseService) : ITodoService
+public class TodoService(IConfiguration configuration, ILogger<TodoService> logger) : BaseModelService<TodoModel>(configuration, logger), ITodoService
 {
-    public async Task<int> CreateTodo(string name, TodoStatus status = TodoStatus.Open)
+    public async Task<int> SaveTodo(TodoDTO dto)
     {
-        // Build SQL statement and execute insert
-        var sql = "INSERT INTO Todos (id, created, name, status) VALUES (UUID(), NOW(), @name, @status);";
-        return await databaseService.Execute(sql, new { name, status });
+        // Build SQL statement and execute command
+        var sql = dto.ID == null
+            ? "INSERT INTO Todos (id, name, status, created) VALUES (UUID(), @Name, @Status, NOW());"
+            : "UPDATE Todos SET name = @Name, status = @Status, updated = NOW() WHERE id = @ID;";
+
+        return await Execute(sql, dto);
     }
 
-    public async Task<int> UpdateTodo(TodoModel todo, string? newName, TodoStatus? newStatus)
+    public async Task<int> DeleteTodo(Guid id)
     {
-        // Set existing values as fallbacks (prevents setting columns to null)
-        newName ??= todo.Name;
-        newStatus ??= todo.Status;
-
-        // Build SQL statement and execute update
-        var sql = "UPDATE Todos SET updated = NOW(), name = @name, status = @status WHERE id = @id;";
-        return await databaseService.Execute(sql, new { id = todo.ID, name = newName, status = newStatus });
+        // Build SQL statement and execute command
+        const string sql = "DELETE FROM Todos WHERE id = @ID;";
+        return await Execute(sql, new { ID = id });
     }
 
-    public async Task<int> DeleteTodo(TodoModel todo)
+    public async Task<TodoModel?> FindTodoById(Guid id)
     {
-        // Build SQL statement and execute delete
-        var sql = "DELETE FROM Todos WHERE id = @id;";
-        return await databaseService.Execute(sql, new { id = todo.ID });
+        // Build SQL statement and run query
+        const string sql = "SELECT * FROM Todos WHERE id = @ID;";
+        return await QuerySingle(sql, new { ID = id });
     }
 
-    public async Task<List<TodoModel>> FetchAllTodos()
+    public async Task<List<TodoModel>> FetchTodos()
     {
-        // Build SQL statement and query items
-        var sql = "SELECT * FROM Todos ORDER BY created DESC;";
-        return await databaseService.QueryList<TodoModel>(sql);
+        // Build SQL statement and run query
+        const string sql = "SELECT * FROM Todos ORDER BY created DESC;";
+        return await Query(sql);
     }
 }

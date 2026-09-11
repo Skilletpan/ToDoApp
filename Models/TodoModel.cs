@@ -23,5 +23,5 @@ public class TodoModel(Guid id, string name, TodoStatus status, DateTime created
     /// </summary>
     public TodoStatus Status { get; } = status;
 
-    public override TodoModelDTO CreateDTO() => new(this);
+    public override TodoDTO CreateDTO() => new(this);
 }
