@@ -18,7 +18,7 @@
                 <div class="card-header">Add To Do</div>
 
                 <!-- Card Body / Todo Editor -->
-                <EditForm Model="EditorDTO" class="card-body" autocomplete="off">
+                <EditForm Model="EditorDTO" class="card-body" autocomplete="off" OnValidSubmit="SubmitForm">
                     <DataAnnotationsValidator />
 
                     <!-- Name Input -->

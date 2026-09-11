@@ -16,6 +16,16 @@ public partial class Home(ITodoService todoService)
     /// </summary>
     private TodoDTO EditorDTO { get; set; } = new();
 
+    async Task SubmitForm()
+    {
+        // Create or Update Todo item and reset form
+        await todoService.SaveTodo(EditorDTO);
+        ResetForm();
+
+        // Fetch new Todo item list
+        todoItems = await todoService.FetchTodos();
+    }
+
     /// <summary>
     /// Resets the form to its empty state.
     /// </summary>
