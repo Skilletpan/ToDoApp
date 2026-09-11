@@ -53,7 +53,7 @@ public partial class Home(ITodoService todoService)
         if (todo.Status == TodoStatus.Done) throw new Exception("Cannot progress completed Todo item!");
 
         // Create Todo DTO with next status
-        var dto = todo.CreateDTO();
+        var dto = todo.ToDTO();
         dto.Status += 1;
 
         // Save Todo item
