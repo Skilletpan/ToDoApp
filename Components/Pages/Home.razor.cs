@@ -61,6 +61,17 @@ public partial class Home(ITodoService todoService)
     }
 
     /// <summary>
+    /// Deletes a Todo item from the database.
+    /// </summary>
+    /// <param name="todo">The Todo item to delete.</param>
+    async Task DeleteTodo(TodoModel todo)
+    {
+        // Delete Todo item and refresh list
+        await todoService.DeleteTodo(todo.ID);
+        todoItems = await todoService.FetchTodos();
+    }
+
+    /// <summary>
     /// Fetches all Todo items from the database.
     /// </summary>
     protected override async Task OnInitializedAsync() => todoItems = await todoService.FetchTodos();
