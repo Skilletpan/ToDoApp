@@ -15,11 +15,22 @@
         <div class="col-sm-3">
             <div class="card">
                 <!-- Card Header -->
-                <div class="card-header">Add To Do</div>
+                <div class="card-header">
+                    @(EditorDTO.ID == null ? "Add To Do" : "Edit To Do")
+                </div>
 
                 <!-- Card Body / Todo Editor -->
                 <EditForm Model="EditorDTO" class="card-body" autocomplete="off" OnValidSubmit="SubmitForm">
                     <DataAnnotationsValidator />
+
+                    <!-- ID Display -->
+                    @if (EditorDTO.ID != null)
+                    {
+                        <div class="input-group mb-2">
+                            <span class="input-group-text">ID</span>
+                            <input class="form-control" disabled value="@EditorDTO.ID" />
+                        </div>
+                    }
 
                     <!-- Name Input -->
                     <div class="input-group mb-2">
@@ -45,14 +56,14 @@
                         <!-- Reset Form -->
                         <div class="col">
                             <button class="form-control btn btn-outline-danger" type="reset" @onclick="ResetForm">
-                                Reset
+                                @(EditorDTO.ID == null ? "Reset" : "Cancel")
                             </button>
                         </div>
 
                         <!-- Submit Form -->
                         <div class="col">
                             <button class="form-control btn btn-primary" type="submit">
-                                Add
+                                @(EditorDTO.ID == null ? "Add" : "Update")
                             </button>
                         </div>
                     </div>
@@ -71,6 +82,7 @@
                         <th>Status</th>
                         <th>Created</th>
                         <th>Changed</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
 
@@ -79,12 +91,18 @@
                     @foreach (var todoItem in todoItems)
                     {
                         <!-- Todo Item Row -->
-                        <tr>
+                        <tr class="align-middle">
                             <td>@todoItem.ID</td>
                             <td>@todoItem.Name</td>
                             <td>@todoItem.Status</td>
                             <td>@todoItem.Created.ToLocalTime().ToString("dd.MM.yyyy, hh:mm")</td>
                             <td>@todoItem.Changed.ToLocalTime().ToString("dd.MM.yyyy, hh:mm")</td>
+                            <td>
+                                <!-- Edit Todo Item -->
+                                <button class="btn btn-sm btn-primary" @onclick="() => EditorDTO = todoItem.CreateDTO()">
+                                    Edit
+                                </button>
+                            </td>
                         </tr>
                     }
                 </tbody>
