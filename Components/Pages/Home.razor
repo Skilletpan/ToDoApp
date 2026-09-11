@@ -17,38 +17,46 @@
                 <!-- Card Header -->
                 <div class="card-header">Add To Do</div>
 
-                <!-- Card Body -->
-                <form id="todo-editor" class="card-body">
+                <!-- Card Body / Todo Editor -->
+                <EditForm Model="EditorDTO" class="card-body" autocomplete="off">
+                    <DataAnnotationsValidator />
+
                     <!-- Name Input -->
                     <div class="input-group mb-2">
                         <span class="input-group-text">Name</span>
-                        <input type="text" class="form-control" />
+                        <InputText class="form-control" @bind-Value="EditorDTO.Name" />
                     </div>
+                    <ValidationMessage For="@(() => EditorDTO.Name)" class="mb-2 text-danger" />
 
                     <!-- Status Select -->
                     <div class="input-group mb-3">
                         <span class="input-group-text">Status</span>
-                        <select class="form-control">
+                        <InputSelect class="form-control" @bind-Value="EditorDTO.Status">
                             @foreach (var status in Enum.GetNames(typeof(TodoStatus)))
                             {
                                 <option>@status</option>
                             }
-                        </select>
+                        </InputSelect>
                     </div>
+                    <ValidationMessage For="@(() => EditorDTO.Status)" class="mb-2 text-danger" />
 
                     <!-- Actions -->
                     <div class="row">
                         <!-- Reset Form -->
                         <div class="col">
-                            <button class="form-control btn btn-outline-danger" type="reset">Reset</button>
+                            <button class="form-control btn btn-outline-danger" type="reset" @onclick="ResetForm">
+                                Reset
+                            </button>
                         </div>
 
                         <!-- Submit Form -->
                         <div class="col">
-                            <button class="form-control btn btn-primary" type="submit">Add</button>
+                            <button class="form-control btn btn-primary" type="submit">
+                                Add
+                            </button>
                         </div>
                     </div>
-                </form>
+                </EditForm>
             </div>
         </div>
 
