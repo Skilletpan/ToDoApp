@@ -98,6 +98,14 @@
                             <td>@todoItem.Created.ToLocalTime().ToString("dd.MM.yyyy, hh:mm")</td>
                             <td>@todoItem.Changed.ToLocalTime().ToString("dd.MM.yyyy, hh:mm")</td>
                             <td>
+                                <!-- Progress Todo Item (move one stage forward) -->
+                                @if (todoItem.Status < TodoStatus.Done)
+                                {
+                                    <button class="btn btn-sm btn-secondary me-2" @onclick="() => ProgressTodo(todoItem)">
+                                        Progress
+                                    </button>
+                                }
+
                                 <!-- Edit Todo Item -->
                                 <button class="btn btn-sm btn-primary" @onclick="() => EditorDTO = todoItem.CreateDTO()">
                                     Edit

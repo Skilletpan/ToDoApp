@@ -1,3 +1,4 @@
+using ToDoApp.Enums;
 using ToDoApp.Models;
 using ToDoApp.Models.DTOs;
 using ToDoApp.Services.Interfaces;
@@ -16,20 +17,48 @@ public partial class Home(ITodoService todoService)
     /// </summary>
     private TodoDTO EditorDTO { get; set; } = new();
 
+    /// <summary>
+    /// Saves the Todo item in the editor and resets the form.
+    /// </summary>
     async Task SubmitForm()
     {
-        // Create or Update Todo item and reset form
-        await todoService.SaveTodo(EditorDTO);
+        // Save Todo item and reset form
+        await SaveTodo(EditorDTO);
         ResetForm();
-
-        // Fetch new Todo item list
-        todoItems = await todoService.FetchTodos();
     }
 
     /// <summary>
     /// Resets the form to its empty state.
     /// </summary>
     void ResetForm() => EditorDTO = new();
+
+    /// <summary>
+    /// Saves or updates a Todo item in the database.
+    /// </summary>
+    /// <param name="dto">The Todo DTO to save.</param>
+    async Task SaveTodo(TodoDTO dto)
+    {
+        // Save Todo item and refresh list
+        await todoService.SaveTodo(dto);
+        todoItems = await todoService.FetchTodos();
+    }
+
+    /// <summary>
+    /// Progresses a Todo item to the next status.
+    /// </summary>
+    /// <param name="todo">The Todo item to progress.</param>
+    async Task ProgressTodo(TodoModel todo)
+    {
+        // Catch Todo items with "Done" status
+        if (todo.Status == TodoStatus.Done) throw new Exception("Cannot progress completed Todo item!");
+
+        // Create Todo DTO with next status
+        var dto = todo.CreateDTO();
+        dto.Status += 1;
+
+        // Save Todo item
+        await SaveTodo(dto);
+    }
 
     /// <summary>
     /// Fetches all Todo items from the database.
