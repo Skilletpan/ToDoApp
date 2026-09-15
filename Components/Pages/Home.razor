@@ -76,7 +76,7 @@
             <div class="input-group mb-3">
                 <!-- Name Search -->
                 <span class="input-group-text">Search</span>
-                <InputText class="form-control" placeholder="Name…" @bind-Value="SearchName" />
+                <input class="form-control" placeholder="Name…" @bind="SearchName" @bind:event="oninput" />
             </div>
 
             <!-- Todos Table -->
