@@ -123,6 +123,14 @@
                             </td>
                         </tr>
                     }
+
+                    <!-- Fallback if list is empty -->
+                    @if (FilteredTodoItems.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">No Items</td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
