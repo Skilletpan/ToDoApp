@@ -8,6 +8,9 @@ public class TodoService(IConfiguration configuration, ILogger<TodoService> logg
 {
     public async Task<int> SaveTodo(TodoDTO dto)
     {
+        // Validate DTO
+        if (!IsValidDTO(dto)) return 0;
+
         // Build SQL statement and execute command
         var sql = dto.ID == null
             ? "INSERT INTO Todos (id, name, status, created) VALUES (UUID(), @Name, @Status, NOW());"

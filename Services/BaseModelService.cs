@@ -1,8 +1,10 @@
 using Dapper;
 using MySql.Data.MySqlClient;
+using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 
 using ToDoApp.Models;
+using ToDoApp.Models.DTOs;
 
 namespace ToDoApp.Services;
 
@@ -75,5 +77,25 @@ public abstract class BaseModelService<T>(IConfiguration configuration, ILogger 
 
         logger.LogDebug("{rows} rows found", result.Count());
         return result.ToList();
+    }
+
+    /// <summary>
+    /// Validates a given DTO using Data Annotations.
+    /// </summary>
+    /// <param name="dto">The DTO to validate.</param>
+    /// <returns>Whether the DTO is valid.</returns>
+    protected bool IsValidDTO(BaseDTO dto)
+    {
+        var validationContext = new ValidationContext(dto);
+        var validationResults = new List<ValidationResult>();
+
+        // Validate DTO using data annotations
+        Validator.TryValidateObject(dto, validationContext, validationResults, validateAllProperties: true);
+
+        // Log all errors
+        foreach (var result in validationResults) logger.LogError(result.ErrorMessage);
+
+        // Return true if no errors
+        return validationResults.Count == 0;
     }
 }
