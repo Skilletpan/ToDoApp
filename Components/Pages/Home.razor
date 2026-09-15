@@ -71,8 +71,15 @@
             </div>
         </div>
 
-        <!-- Todos Table -->
         <div class="col-sm-9">
+            <!-- Todo Filters -->
+            <div class="input-group mb-3">
+                <!-- Name Search -->
+                <span class="input-group-text">Search</span>
+                <InputText class="form-control" placeholder="Name…" @bind-Value="SearchName" />
+            </div>
+
+            <!-- Todos Table -->
             <table class="table table-bordered table-striped">
                 <!-- Column Headers -->
                 <thead>
@@ -88,7 +95,7 @@
 
                 <!-- Body with Todo Items -->
                 <tbody>
-                    @foreach (var todoItem in todoItems)
+                    @foreach (var todoItem in FilteredTodoItems)
                     {
                         <!-- Todo Item Row -->
                         <tr class="align-middle">
