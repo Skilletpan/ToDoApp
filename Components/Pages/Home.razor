@@ -103,8 +103,8 @@
                             <td>@todoItem.ID</td>
                             <td>@todoItem.Name</td>
                             <td>@todoItem.Status</td>
-                            <td>@todoItem.Created.ToLocalTime().ToString("dd.MM.yyyy, hh:mm")</td>
-                            <td>@todoItem.Changed.ToLocalTime().ToString("dd.MM.yyyy, hh:mm")</td>
+                            <td>@todoItem.Created.ToLocalTime().ToString("dd.MM.yyyy, HH:mm")</td>
+                            <td>@todoItem.Changed.ToLocalTime().ToString("dd.MM.yyyy, HH:mm")</td>
                             <td>
                                 <!-- Progress Todo Item (move one stage forward) -->
                                 @if (todoItem.Status < TodoStatus.Done)
