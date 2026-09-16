@@ -16,5 +16,7 @@ public class TodoDTO(TodoModel? source = null) : BaseDTO(source)
     /// <summary>
     /// The new status for the Todo item.
     /// </summary>
+    [Required(ErrorMessage = "Status is required!")]
+    [Range(0, 2, ErrorMessage = "Status is out of range!")]
     public TodoStatus Status { get; set; } = source?.Status ?? TodoStatus.Open;
 }
