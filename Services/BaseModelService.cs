@@ -11,10 +11,12 @@ namespace ToDoApp.Services;
 public abstract class BaseModelService<T>(IConfiguration configuration, ILogger logger) where T : BaseModel
 {
     /// <summary>
-    /// The connection string pointing at the targeted database.
+    /// The connection object of the database to read and write data to and from.
     /// </summary>
-    private readonly string ConnectionString = configuration.GetConnectionString("DB_CONN")
-        ?? throw new ConfigurationErrorsException("Connection string DB_CONN is missing!");
+    private readonly MySqlConnection DbConnection = new(
+        configuration.GetConnectionString("DB_CONN")
+        ?? throw new ConfigurationErrorsException("Connection string DB_CONN is missing!")
+    );
 
     /// <summary>
     /// Runs an <c>INSERT</c>, <c>UPDATE</c> or <c>DELETE</c> command on the database.
@@ -28,9 +30,9 @@ public abstract class BaseModelService<T>(IConfiguration configuration, ILogger 
 
         // Open database connection and execute command
         int result;
-        await using (var connection = new MySqlConnection(ConnectionString))
+        await using (DbConnection)
         {
-            result = await connection.ExecuteAsync(sql, parameters);
+            result = await DbConnection.ExecuteAsync(sql, parameters);
         }
 
         logger.LogDebug("{rows} rows updated", result);
@@ -49,9 +51,9 @@ public abstract class BaseModelService<T>(IConfiguration configuration, ILogger 
 
         // Open database connection and execute query
         T? result;
-        await using (var connection = new MySqlConnection(ConnectionString))
+        await using (DbConnection)
         {
-            result = await connection.QueryFirstOrDefaultAsync<T>(sql, parameters);
+            result = await DbConnection.QueryFirstOrDefaultAsync<T>(sql, parameters);
         }
 
         logger.LogDebug("{rows} rows found", result == null ? 0 : 1);
@@ -70,9 +72,9 @@ public abstract class BaseModelService<T>(IConfiguration configuration, ILogger 
 
         // Open database connection and execute query
         IEnumerable<T> result;
-        await using (var connection = new MySqlConnection(ConnectionString))
+        await using (DbConnection)
         {
-            result = await connection.QueryAsync<T>(sql, parameters);
+            result = await DbConnection.QueryAsync<T>(sql, parameters);
         }
 
         logger.LogDebug("{rows} rows found", result.Count());
