@@ -75,9 +75,16 @@
             <!-- Todo Filters -->
             <div class="input-group mb-3">
                 <!-- Name Search -->
-                <span class="input-group-text">Search</span>
-                <input type="search" class="form-control" placeholder="Name…" @bind="SearchName"
+                <input type="search" class="form-control" placeholder="Search…" @bind="filters.Search"
                        @bind:event="oninput" />
+
+                <!-- Status Pickers -->
+                @foreach (TodoStatus status in Enum.GetValues(typeof(TodoStatus)))
+                {
+                    <button type="button"
+                            class="btn @(filters.Status.Contains(status) ? "btn-secondary" : "btn-outline-secondary")"
+                            @onclick="() => filters.ToggleStatus(status)">@status</button>
+                }
             </div>
 
             <!-- Todos Table -->
@@ -126,7 +133,7 @@
                     }
 
                     <!-- Fallback if list is empty -->
-                    @if (FilteredTodoItems.Count == 0)
+                    @if (FilteredTodoItems.Count() == 0)
                     {
                         <tr>
                             <td colspan="6" class="text-center text-muted">No Items</td>

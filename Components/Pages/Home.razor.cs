@@ -13,26 +13,19 @@ public partial class Home(ITodoService todoService)
     private TodoDTO EditorDTO { get; set; } = new();
 
     /// <summary>
+    /// The filters to filter Todo items by.
+    /// </summary>
+    private TodoFilters filters = new();
+
+    /// <summary>
     /// The list of Todo items in the database.
     /// </summary>
     private List<TodoModel> TodoItems = [];
 
     /// <summary>
-    /// The string to filter Todo item names buy.
+    /// The filtered Todo items.
     /// </summary>
-    private string SearchName = string.Empty;
-
-    /// <summary>
-    /// The list of Todo items after applying filters.
-    /// </summary>
-    private List<TodoModel> FilteredTodoItems => TodoItems.Where(todoItem =>
-    {
-        // Check against name search value
-        if (!todoItem.Name.Contains(SearchName, StringComparison.CurrentCultureIgnoreCase)) return false;
-
-        // Return remaining items
-        return true;
-    }).ToList();
+    private IEnumerable<TodoModel> FilteredTodoItems => filters.Filter(TodoItems);
 
     /// <summary>
     /// Saves the Todo item in the editor and resets the form.
@@ -92,4 +85,61 @@ public partial class Home(ITodoService todoService)
     /// Fetches all Todo items from the database.
     /// </summary>
     protected override async Task OnInitializedAsync() => TodoItems = await todoService.FetchTodos();
+
+    private struct TodoFilters
+    {
+        public TodoFilters() { }
+
+        /// <summary>
+        /// The string to filter Todo item names buy.
+        /// </summary>
+        public string Search = string.Empty;
+
+        /// <summary>
+        /// The list of statuses to filter Todo items by.
+        /// </summary>
+        public List<TodoStatus> Status = [];
+
+        /// <summary>
+        /// Adds or removes a Status from the filter statuses.
+        /// </summary>
+        /// <param name="status">The status to toggle.</param>
+        public void ToggleStatus(TodoStatus status)
+        {
+            if (Status.Contains(status)) Status.Remove(status);
+            else Status.Add(status);
+        }
+
+        /// <summary>
+        /// Filters a given list of Todo items according to the set filters in this object.
+        /// </summary>
+        /// <param name="items">The items to filter.</param>
+        /// <returns>The filtered items.</returns>
+        public IEnumerable<TodoModel> Filter(IEnumerable<TodoModel> items)
+        {
+            var search = Search;
+            var status = Status;
+
+            return items.Where(item =>
+            {
+                // Filter by name
+                if (!item.Name.Contains(search, StringComparison.InvariantCultureIgnoreCase)) return false;
+
+                // Filter by status
+                if (status.Count > 0 && !status.Contains(item.Status)) return false;
+
+                // Return remaining
+                return true;
+            });
+        }
+
+        /// <summary>
+        /// Resets the filters to their empty state.
+        /// </summary>
+        public void Reset()
+        {
+            Search = string.Empty;
+            Status.Clear();
+        }
+    }
 }
