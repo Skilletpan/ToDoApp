@@ -13,12 +13,12 @@ public abstract class BaseModel(Guid id, DateTime created, DateTime? updated = n
     /// <summary>
     /// The unique identifier of the Model item.
     /// </summary>
-    public Guid ID { get; } = id;
+    public readonly Guid ID = id;
 
     /// <summary>
     /// The date and time when the Model item was created.
     /// </summary>
-    public DateTime Created { get; } = created;
+    public readonly DateTime Created = created;
 
     /// <summary>
     /// The date and time when the Model item was last updated.
