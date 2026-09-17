@@ -43,7 +43,7 @@
                     <div class="input-group mb-3">
                         <span class="input-group-text">Status</span>
                         <InputSelect class="form-control" @bind-Value="EditorDTO.Status">
-                            @foreach (var status in Enum.GetNames(typeof(TodoStatus)))
+                            @foreach (TodoStatus status in Enum.GetValues(typeof(TodoStatus)))
                             {
                                 <option>@status</option>
                             }
