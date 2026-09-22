@@ -111,16 +111,54 @@ public partial class Home(ITodoService todoService)
         }
 
         /// <summary>
-        /// Filters a given list of Todo items according to the set filters in this object.
+        /// The propety to sort Todo items by.
+        /// </summary>
+        public string SortProperty = string.Empty;
+
+        /// <summary>
+        /// The order in which to sort Todo items.
+        /// </summary>
+        public SortingOrder SortOrder = SortingOrder.Descending;
+
+        /// <summary>
+        /// Updates the property and order Todo items should be sorted by.
+        /// </summary>
+        /// <param name="property">The selected sorting property.</param>
+        public void SetSorting(string property)
+        {
+            Console.WriteLine($"{SortProperty}, {property}");
+
+            // Invert sort order if sort property was already selected
+            if (property == SortProperty) SortOrder = SortOrder == SortingOrder.Ascending ? SortingOrder.Descending : SortingOrder.Ascending;
+
+            // Set new key with column default sorting order
+            else
+            {
+                SortProperty = property;
+                SortOrder = property switch
+                {
+                    "Name" or "Status" => SortingOrder.Ascending,
+                    _ => SortingOrder.Descending
+                };
+            }
+        }
+
+        /// <summary>
+        /// Filters and sorts the list.
         /// </summary>
         /// <param name="items">The items to filter.</param>
         /// <returns>The filtered items.</returns>
-        public IEnumerable<TodoModel> Filter(IEnumerable<TodoModel> items)
+        public readonly IEnumerable<TodoModel> Filter(IEnumerable<TodoModel> items)
         {
             var search = Search;
             var status = Status;
+            var sortProperty = SortProperty;
 
-            return items.Where(item =>
+            // Property selector function for sorting
+            Func<TodoModel, object?> sortKeySelector = item => item.GetType().GetProperty(sortProperty)?.GetValue(item, null);
+
+            // Filter items
+            var filteredItems = items.Where(item =>
             {
                 // Filter by name
                 if (!item.Name.Contains(search, StringComparison.InvariantCultureIgnoreCase)) return false;
@@ -131,12 +169,17 @@ public partial class Home(ITodoService todoService)
                 // Return remaining
                 return true;
             });
+
+            // Sort items and return list
+            return SortOrder == SortingOrder.Ascending
+                ? filteredItems.OrderBy(sortKeySelector)
+                : filteredItems.OrderByDescending(sortKeySelector);
         }
 
         /// <summary>
         /// Resets the filters to their empty state.
         /// </summary>
-        public void Reset()
+        public void ResetFilters()
         {
             Search = string.Empty;
             Status.Clear();

@@ -90,13 +90,21 @@
             <!-- Todos Table -->
             <table class="table table-bordered table-striped">
                 <!-- Column Headers -->
-                <thead>
+                <thead class="align-middle">
                     <tr>
                         <th>ID</th>
-                        <th>Name</th>
-                        <th>Status</th>
-                        <th>Created</th>
-                        <th>Changed</th>
+                        <!-- Sortable Column Headers -->
+                        @foreach (var key in new List<string>(["Name", "Status", "Created", "Changed"]))
+                        {
+                            <th>
+                                @key
+                                <button
+                                    class="btn btn-sm @(filters.SortProperty == key ? "btn-secondary" : "btn-outline-secondary")"
+                                    @onclick="() => filters.SetSorting(key)">
+                                    Sort
+                                </button>
+                            </th>
+                        }
                         <th>Actions</th>
                     </tr>
                 </thead>
