@@ -126,8 +126,6 @@ public partial class Home(ITodoService todoService)
         /// <param name="property">The selected sorting property.</param>
         public void SetSorting(string property)
         {
-            Console.WriteLine($"{SortProperty}, {property}");
-
             // Invert sort order if sort property was already selected
             if (property == SortProperty) SortOrder = SortOrder == SortingOrder.Ascending ? SortingOrder.Descending : SortingOrder.Ascending;
 
