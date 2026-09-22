@@ -28,7 +28,7 @@ public abstract class BaseModelService<T>(IConfiguration configuration, ILogger 
     {
         await using (DbConnection)
         {
-            logger.LogDebug("Query: {query} Parameters: {parameters}", sql, parameters?.ToString());
+            logger.LogDebug("Query: {query} Parameters: {parameters}", sql, parameters);
 
             // Open database connection and execute command
             var rows = await DbConnection.ExecuteAsync(sql, parameters);
@@ -48,7 +48,7 @@ public abstract class BaseModelService<T>(IConfiguration configuration, ILogger 
     {
         await using (DbConnection)
         {
-            logger.LogDebug("Query: {query} Parameters: {parameters}", sql, parameters?.ToString());
+            logger.LogDebug("Query: {query} Parameters: {parameters}", sql, parameters);
 
             // Execute and return item or null
             var itemOrNull = await DbConnection.QueryFirstAsync<T>(sql, parameters);
@@ -68,7 +68,7 @@ public abstract class BaseModelService<T>(IConfiguration configuration, ILogger 
     {
         await using (DbConnection)
         {
-            logger.LogDebug("Query: {query} Parameters: {parameters}", sql, parameters?.ToString());
+            logger.LogDebug("Query: {query} Parameters: {parameters}", sql, parameters);
 
             // Execute query and return items
             var items = await DbConnection.QueryAsync<T>(sql, parameters);
