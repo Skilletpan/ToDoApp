@@ -30,5 +30,5 @@ public interface ITodoService
     /// Fetches all Todo items from the database.
     /// </summary>
     /// <returns>A list of all Todo items.</returns>
-    public Task<List<TodoModel>> FetchTodos();
+    public Task<IEnumerable<TodoModel>> FetchTodos();
 }

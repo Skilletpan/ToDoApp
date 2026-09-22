@@ -20,7 +20,7 @@ public partial class Home(ITodoService todoService)
     /// <summary>
     /// The list of Todo items in the database.
     /// </summary>
-    private List<TodoModel> TodoItems = [];
+    private IEnumerable<TodoModel> TodoItems = [];
 
     /// <summary>
     /// The filtered Todo items.

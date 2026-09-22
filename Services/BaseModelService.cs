@@ -26,17 +26,16 @@ public abstract class BaseModelService<T>(IConfiguration configuration, ILogger 
     /// <returns>The amount of rows that were affected by the command.</returns>
     protected async Task<int> Execute(string sql, object? parameters = null)
     {
-        logger.LogDebug("Running {query}", sql);
-
-        // Open database connection and execute command
-        int result;
         await using (DbConnection)
         {
-            result = await DbConnection.ExecuteAsync(sql, parameters);
-        }
+            logger.LogDebug("Query: {query} Parameters: {parameters}", sql, parameters?.ToString());
 
-        logger.LogDebug("{rows} rows updated", result);
-        return result;
+            // Open database connection and execute command
+            var rows = await DbConnection.ExecuteAsync(sql, parameters);
+            logger.LogDebug("{rows} rows updated", rows);
+
+            return rows;
+        }
     }
 
     /// <summary>
@@ -44,20 +43,19 @@ public abstract class BaseModelService<T>(IConfiguration configuration, ILogger 
     /// </summary>
     /// <param name="sql">The SQL query to run.</param>
     /// <param name="parameters">The parameters to inject into the SQL query.</param>
-    /// <returns>The first result or <c>null</c>.</returns>
+    /// <returns>The first item matching the query or <c>null</c>.</returns>
     protected async Task<T?> QuerySingle(string sql, object? parameters = null)
     {
-        logger.LogDebug("Running {query}", sql);
-
-        // Open database connection and execute query
-        T? result;
         await using (DbConnection)
         {
-            result = await DbConnection.QueryFirstOrDefaultAsync<T>(sql, parameters);
-        }
+            logger.LogDebug("Query: {query} Parameters: {parameters}", sql, parameters?.ToString());
 
-        logger.LogDebug("{rows} rows found", result == null ? 0 : 1);
-        return result;
+            // Execute and return item or null
+            var itemOrNull = await DbConnection.QueryFirstAsync<T>(sql, parameters);
+            logger.LogDebug("{amount} items found.", itemOrNull == null ? 0 : 1);
+
+            return itemOrNull;
+        }
     }
 
     /// <summary>
@@ -65,20 +63,19 @@ public abstract class BaseModelService<T>(IConfiguration configuration, ILogger 
     /// </summary>
     /// <param name="sql">The SQL query to run.</param>
     /// <param name="parameters">The parameters to inject into the SQL query.</param>
-    /// <returns>The list of results.</returns>
-    protected async Task<List<T>> Query(string sql, object? parameters = null)
+    /// <returns>The list of items matching the query.</returns>
+    protected async Task<IEnumerable<T>> Query(string sql, object? parameters = null)
     {
-        logger.LogDebug("Running {query}", sql);
-
-        // Open database connection and execute query
-        IEnumerable<T> result;
         await using (DbConnection)
         {
-            result = await DbConnection.QueryAsync<T>(sql, parameters);
-        }
+            logger.LogDebug("Query: {query} Parameters: {parameters}", sql, parameters?.ToString());
 
-        logger.LogDebug("{rows} rows found", result.Count());
-        return result.ToList();
+            // Execute query and return items
+            var items = await DbConnection.QueryAsync<T>(sql, parameters);
+            logger.LogDebug("{amount} items found.", items.Count());
+
+            return items;
+        }
     }
 
     /// <summary>

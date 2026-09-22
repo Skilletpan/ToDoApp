@@ -33,7 +33,7 @@ public class TodoService(IConfiguration configuration, ILogger<TodoService> logg
         return await QuerySingle(sql, new { ID = id });
     }
 
-    public async Task<List<TodoModel>> FetchTodos()
+    public async Task<IEnumerable<TodoModel>> FetchTodos()
     {
         // Build SQL statement and run query
         const string sql = "SELECT * FROM Todos ORDER BY created DESC;";
