@@ -118,7 +118,7 @@ public partial class Home(ITodoService todoService)
         /// <summary>
         /// The order in which to sort Todo items.
         /// </summary>
-        public SortingOrder SortOrder = SortingOrder.Descending;
+        public Order SortOrder = Order.Descending;
 
         /// <summary>
         /// Updates the property and order Todo items should be sorted by.
@@ -127,7 +127,7 @@ public partial class Home(ITodoService todoService)
         public void SetSorting(string property)
         {
             // Invert sort order if sort property was already selected
-            if (property == SortProperty) SortOrder = SortOrder == SortingOrder.Ascending ? SortingOrder.Descending : SortingOrder.Ascending;
+            if (property == SortProperty) SortOrder = SortOrder == Order.Ascending ? Order.Descending : Order.Ascending;
 
             // Set new key with column default sorting order
             else
@@ -135,8 +135,8 @@ public partial class Home(ITodoService todoService)
                 SortProperty = property;
                 SortOrder = property switch
                 {
-                    "Name" or "Status" => SortingOrder.Ascending,
-                    _ => SortingOrder.Descending
+                    "Name" or "Status" => Order.Ascending,
+                    _ => Order.Descending
                 };
             }
         }
@@ -169,7 +169,7 @@ public partial class Home(ITodoService todoService)
             });
 
             // Sort items and return list
-            return SortOrder == SortingOrder.Ascending
+            return SortOrder == Order.Ascending
                 ? filteredItems.OrderBy(sortKeySelector)
                 : filteredItems.OrderByDescending(sortKeySelector);
         }

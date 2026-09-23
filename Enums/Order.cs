@@ -1,6 +1,6 @@
 namespace ToDoApp.Enums;
 
-public enum SortingOrder
+public enum Order
 {
     Ascending,
     Descending
