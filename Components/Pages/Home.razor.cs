@@ -113,7 +113,7 @@ public partial class Home(ITodoService todoService)
         /// <summary>
         /// The propety to sort Todo items by.
         /// </summary>
-        public string SortProperty = string.Empty;
+        public string SortProperty = "Created";
 
         /// <summary>
         /// The order in which to sort Todo items.
