@@ -153,7 +153,11 @@ public partial class Home(ITodoService todoService)
             var sortProperty = SortProperty;
 
             // Property selector function for sorting
-            Func<TodoModel, object?> sortKeySelector = item => item.GetType().GetProperty(sortProperty)?.GetValue(item, null);
+            object? sortKeySelector(TodoModel item) => sortProperty switch
+            {
+                "Created" => item.GetType().GetField(sortProperty)?.GetValue(item),
+                _ => item.GetType().GetProperty(sortProperty)?.GetValue(item, null),
+            };
 
             // Filter items
             var filteredItems = items.Where(item =>
