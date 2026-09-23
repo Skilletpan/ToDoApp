@@ -106,8 +106,7 @@ public partial class Home(ITodoService todoService)
         /// <param name="status">The status to toggle.</param>
         public void ToggleStatus(TodoStatus status)
         {
-            if (Status.Contains(status)) Status.Remove(status);
-            else Status.Add(status);
+            if (!Status.Remove(status)) Status.Add(status);
         }
 
         /// <summary>
