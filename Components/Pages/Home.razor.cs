@@ -117,7 +117,7 @@ public partial class Home(ITodoService todoService)
             if (!item.Name.Contains(Search, StringComparison.InvariantCultureIgnoreCase)) return false;
 
             // Filter by Status
-            if (Status.Count() > 0 && !Status.Contains(item.Status)) return false;
+            if (Status.Any() && !Status.Contains(item.Status)) return false;
 
             // Filter passed
             return true;
