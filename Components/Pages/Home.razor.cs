@@ -15,17 +15,23 @@ public partial class Home(ITodoService todoService)
     /// <summary>
     /// The filters to filter Todo items by.
     /// </summary>
-    private TodoFilters filters = new();
+    private TodoFilters Filters = new();
+
+    /// <summary>
+    /// The sortable column headers and value references.
+    /// </summary>
+    private readonly Dictionary<string, Func<TodoModel, object>> ColumnHeaders = new()
+    {
+        { "Name", todo => todo.Name },
+        { "Status", todo => todo.Status },
+        { "Created", todo => todo.Created },
+        { "Changed", todo => todo.Changed }
+    };
 
     /// <summary>
     /// The list of Todo items in the database.
     /// </summary>
     private IEnumerable<TodoModel> TodoItems = [];
-
-    /// <summary>
-    /// The filtered Todo items.
-    /// </summary>
-    private IEnumerable<TodoModel> FilteredTodoItems => filters.Filter(TodoItems);
 
     /// <summary>
     /// Saves the Todo item in the editor and resets the form.
@@ -98,83 +104,23 @@ public partial class Home(ITodoService todoService)
         /// <summary>
         /// The list of statuses to filter Todo items by.
         /// </summary>
-        public List<TodoStatus> Status = [];
+        public IEnumerable<TodoStatus> Status = [TodoStatus.Open, TodoStatus.InProgress];
 
         /// <summary>
-        /// Adds or removes a Status from the filter statuses.
+        /// Checks a Todo item to see if it passes the filters.
         /// </summary>
-        /// <param name="status">The status to toggle.</param>
-        public void ToggleStatus(TodoStatus status)
+        /// <param name="item">The Todo item to check.</param>
+        /// <returns></returns>
+        public readonly bool CheckItem(TodoModel item)
         {
-            if (!Status.Remove(status)) Status.Add(status);
-        }
+            // Filter by Name
+            if (!item.Name.Contains(Search, StringComparison.InvariantCultureIgnoreCase)) return false;
 
-        /// <summary>
-        /// The propety to sort Todo items by.
-        /// </summary>
-        public string SortProperty = "Created";
+            // Filter by Status
+            if (Status.Count() > 0 && !Status.Contains(item.Status)) return false;
 
-        /// <summary>
-        /// The order in which to sort Todo items.
-        /// </summary>
-        public Order SortOrder = Order.Descending;
-
-        /// <summary>
-        /// Updates the property and order Todo items should be sorted by.
-        /// </summary>
-        /// <param name="property">The selected sorting property.</param>
-        public void SetSorting(string property)
-        {
-            // Invert sort order if sort property was already selected
-            if (property == SortProperty) SortOrder = SortOrder == Order.Ascending ? Order.Descending : Order.Ascending;
-
-            // Set new key with column default sorting order
-            else
-            {
-                SortProperty = property;
-                SortOrder = property switch
-                {
-                    "Name" or "Status" => Order.Ascending,
-                    _ => Order.Descending
-                };
-            }
-        }
-
-        /// <summary>
-        /// Filters and sorts the list.
-        /// </summary>
-        /// <param name="items">The items to filter.</param>
-        /// <returns>The filtered items.</returns>
-        public readonly IEnumerable<TodoModel> Filter(IEnumerable<TodoModel> items)
-        {
-            var search = Search;
-            var status = Status;
-            var sortProperty = SortProperty;
-
-            // Property selector function for sorting
-            object? sortKeySelector(TodoModel item) => sortProperty switch
-            {
-                "Created" => item.GetType().GetField(sortProperty)?.GetValue(item),
-                _ => item.GetType().GetProperty(sortProperty)?.GetValue(item, null),
-            };
-
-            // Filter items
-            var filteredItems = items.Where(item =>
-            {
-                // Filter by name
-                if (!item.Name.Contains(search, StringComparison.InvariantCultureIgnoreCase)) return false;
-
-                // Filter by status
-                if (status.Count > 0 && !status.Contains(item.Status)) return false;
-
-                // Return remaining
-                return true;
-            });
-
-            // Sort items and return list
-            return SortOrder == Order.Ascending
-                ? filteredItems.OrderBy(sortKeySelector)
-                : filteredItems.OrderByDescending(sortKeySelector);
+            // Filter passed
+            return true;
         }
 
         /// <summary>
@@ -183,7 +129,7 @@ public partial class Home(ITodoService todoService)
         public void ResetFilters()
         {
             Search = string.Empty;
-            Status.Clear();
+            Status = [TodoStatus.Open, TodoStatus.InProgress];
         }
     }
 }

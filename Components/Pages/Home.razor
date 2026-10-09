@@ -1,154 +1,153 @@
 ﻿@page "/"
-@rendermode InteractiveServer
 
 @using ToDoApp.Enums;
+@using ToDoApp.Models;
 
 <PageTitle>Blazor: To Do</PageTitle>
 
-<div class="container-fluid">
-    <h1>Blazor: To Do</h1>
+<MudGrid>
+    <!-- To Do Creator/Editor -->
+    <MudItem xs="3">
+        <EditForm Model="EditorDTO" OnValidSubmit="SubmitForm">
+            <DataAnnotationsValidator />
 
-    <hr />
+            <MudCard Outlined>
+                <!-- Header -->
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">@(EditorDTO.ID == null ? "Create" : "Edit") To Do</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
 
-    <div class="row">
-        <!-- To Do Editor -->
-        <div class="col-sm-3">
-            <div class="card">
-                <!-- Card Header -->
-                <div class="card-header">
-                    @(EditorDTO.ID == null ? "Add To Do" : "Edit To Do")
-                </div>
-
-                <!-- Card Body / Todo Editor -->
-                <EditForm Model="EditorDTO" class="card-body" autocomplete="off" OnValidSubmit="SubmitForm">
-                    <DataAnnotationsValidator />
-
-                    <!-- ID Display -->
-                    @if (EditorDTO.ID != null)
-                    {
-                        <div class="input-group mb-2">
-                            <span class="input-group-text">ID</span>
-                            <input class="form-control" disabled value="@EditorDTO.ID" />
-                        </div>
-                    }
-
+                <!-- Content -->
+                <MudCardContent>
                     <!-- Name Input -->
-                    <div class="input-group mb-2">
-                        <span class="input-group-text">Name</span>
-                        <InputText class="form-control" @bind-Value="EditorDTO.Name" />
-                    </div>
-                    <ValidationMessage For="@(() => EditorDTO.Name)" class="mb-2 text-danger" />
+                    <MudTextField @bind-Value="EditorDTO.Name" For="@(() => EditorDTO.Name)" Label="Name" MaxLength="30"
+                                  Variant="Variant.Outlined" Class="mb-4" />
 
-                    <!-- Status Select -->
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Status</span>
-                        <InputSelect class="form-control" @bind-Value="EditorDTO.Status">
-                            @foreach (TodoStatus status in Enum.GetValues(typeof(TodoStatus)))
-                            {
-                                <option>@status</option>
-                            }
-                        </InputSelect>
-                    </div>
-                    <ValidationMessage For="@(() => EditorDTO.Status)" class="mb-2 text-danger" />
-
-                    <!-- Actions -->
-                    <div class="row">
-                        <!-- Reset Form -->
-                        <div class="col">
-                            <button class="form-control btn btn-outline-danger" type="reset" @onclick="ResetForm">
-                                @(EditorDTO.ID == null ? "Reset" : "Cancel")
-                            </button>
-                        </div>
-
-                        <!-- Submit Form -->
-                        <div class="col">
-                            <button class="form-control btn btn-primary" type="submit">
-                                @(EditorDTO.ID == null ? "Add" : "Update")
-                            </button>
-                        </div>
-                    </div>
-                </EditForm>
-            </div>
-        </div>
-
-        <div class="col-sm-9">
-            <!-- Todo Filters -->
-            <div class="input-group mb-3">
-                <!-- Name Search -->
-                <input type="search" class="form-control" placeholder="Search…" @bind="filters.Search"
-                       @bind:event="oninput" />
-
-                <!-- Status Pickers -->
-                @foreach (TodoStatus status in Enum.GetValues(typeof(TodoStatus)))
-                {
-                    <button type="button"
-                            class="btn @(filters.Status.Contains(status) ? "btn-secondary" : "btn-outline-secondary")"
-                            @onclick="() => filters.ToggleStatus(status)">@status</button>
-                }
-            </div>
-
-            <!-- Todos Table -->
-            <table class="table table-bordered table-striped">
-                <!-- Column Headers -->
-                <thead class="align-middle">
-                    <tr>
-                        <th>ID</th>
-                        <!-- Sortable Column Headers -->
-                        @foreach (var key in new List<string>(["Name", "Status", "Created", "Changed"]))
+                    <!-- Status Input -->
+                    <MudSelect @bind-Value="EditorDTO.Status" For="@(() => EditorDTO.Status)" Label="Status"
+                               Variant="Variant.Outlined">
+                        @foreach (TodoStatus status in Enum.GetValues(typeof(TodoStatus)))
                         {
-                            <th>
-                                @key
-                                <button
-                                    class="btn btn-sm @(filters.SortProperty == key ? "btn-secondary" : "btn-outline-secondary")"
-                                    @onclick="() => filters.SetSorting(key)">
-                                    Sort
-                                </button>
-                            </th>
+                            <MudSelectItem Value="@status">
+                                @(status == TodoStatus.InProgress ? "In Progress" : status)
+                            </MudSelectItem>
                         }
-                        <th>Actions</th>
-                    </tr>
-                </thead>
+                    </MudSelect>
+                </MudCardContent>
 
-                <!-- Body with Todo Items -->
-                <tbody>
-                    @foreach (var todoItem in FilteredTodoItems)
+                <!-- Actions -->
+                <MudCardActions>
+                    <!-- Reset Form -->
+                    <MudButton ButtonType="ButtonType.Reset" Color="Color.Error" Class="mr-2" @onclick="ResetForm">
+                        @(EditorDTO.ID == null ? "Reset" : "Cancel")
+                    </MudButton>
+
+                    <!-- Submit Form -->
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+                        @(EditorDTO.ID == null ? "Add" : "Update")
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </EditForm>
+    </MudItem>
+
+    <!-- To Do Items -->
+    <MudItem xs="9">
+        <MudTable Items="@TodoItems" Filter="Filters.CheckItem" FixedHeader Outlined>
+            <!-- Toolbar -->
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">My To Dos</MudText>
+
+                <MudSpacer />
+
+                <!-- Name Search -->
+                <MudTextField @bind-Value="Filters.Search" Placeholder="Search…" Clearable Immediate
+                              Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" />
+
+                <!-- Status Filter -->
+                <MudToggleGroup @bind-Values="Filters.Status" T="TodoStatus"
+                                SelectionMode="SelectionMode.MultiSelection" Class="ml-4">
+                    @foreach (TodoStatus status in Enum.GetValues(typeof(TodoStatus)))
                     {
-                        <!-- Todo Item Row -->
-                        <tr class="align-middle">
-                            <td>@todoItem.ID</td>
-                            <td>@todoItem.Name</td>
-                            <td>@todoItem.Status</td>
-                            <td>@todoItem.Created.ToLocalTime().ToString("dd.MM.yyyy, HH:mm")</td>
-                            <td>@todoItem.Changed.ToLocalTime().ToString("dd.MM.yyyy, HH:mm")</td>
-                            <td>
-                                <!-- Progress Todo Item (move one stage forward) -->
-                                @if (todoItem.Status < TodoStatus.Done)
-                                {
-                                    <button class="btn btn-sm btn-secondary me-2" @onclick="() => ProgressTodo(todoItem)">
-                                        Progress
-                                    </button>
-                                }
-
-                                <!-- Edit Todo Item -->
-                                <button class="btn btn-sm btn-primary me-2" @onclick="() => EditorDTO = todoItem.ToDTO()">
-                                    Edit
-                                </button>
-
-                                <!-- Delete Todo Item -->
-                                <button class="btn btn-sm btn-danger" @onclick="() => DeleteTodo(todoItem)">Delete</button>
-                            </td>
-                        </tr>
+                        <MudToggleItem Value="@status">
+                            @status
+                        </MudToggleItem>
                     }
+                </MudToggleGroup>
+            </ToolBarContent>
 
-                    <!-- Fallback if list is empty -->
-                    @if (FilteredTodoItems.Count() == 0)
+            <!-- Column Headers -->
+            <HeaderContent>
+                <!-- Sortable Columns -->
+                @foreach (var header in ColumnHeaders)
+                {
+                    <MudTh>
+                        <MudTableSortLabel SortBy="header.Value">@header.Key</MudTableSortLabel>
+                    </MudTh>
+                }
+
+                <!-- Actions Column -->
+                <MudTh></MudTh>
+            </HeaderContent>
+
+            <!-- To Do Item Rows -->
+            <RowTemplate>
+                <!-- Name -->
+                <MudTd DataLabel="Name">
+                    <!-- Name -->
+                    <MudText Typo="Typo.subtitle2">@context.Name</MudText>
+
+                    <!-- ID -->
+                    <MudText Typo="Typo.caption">
+                        ID: <MudText Typo="Typo.inherit" Color="Color.Info">@context.ID</MudText>
+                    </MudText>
+                </MudTd>
+
+                <!-- Status -->
+                <MudTd DataLabel="Status">
+                    <!-- Status Text -->
+                    @context.Status
+
+                    <!-- Progress Button -->
+                    @if (@context.Status < TodoStatus.Done)
                     {
-                        <tr>
-                            <td colspan="6" class="text-center text-muted">No Items</td>
-                        </tr>
+                        <MudTooltip Text="@($"Move to {context.Status + 1}")">
+                            <MudIconButton Icon="@Icons.Material.Filled.FastForward" Size="Size.Small" Class="ml-2"
+                                           @onclick="() => ProgressTodo(context)" />
+                        </MudTooltip>
                     }
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+                </MudTd>
+
+                <!-- Created -->
+                <MudTd DataLabel="Created">@context.Created.ToLocalTime().ToString("dd.MM.yyyy, HH:mm")</MudTd>
+
+                <!-- Changed -->
+                <MudTd DataLabel="Changed">@context.Changed.ToLocalTime().ToString("dd.MM.yyyy, HH:mm")</MudTd>
+
+                <!-- Actions -->
+                <MudTd DataLabel="Actions" Style="text-align: right;">
+                    <!-- Edit Button -->
+                    <MudTooltip Text="Edit">
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small"
+                                       @onclick="() => EditorDTO = context.ToDTO()" />
+                    </MudTooltip>
+                    
+                    <!-- Delete Button -->
+                    <MudTooltip Text="Delete">
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small"
+                                       @onclick="() => DeleteTodo(context)" />
+                    </MudTooltip>
+                </MudTd>
+            </RowTemplate>
+
+            <!-- Table End Row -->
+            <FooterContent>
+                <MudTd colspan="5">
+                    <MudText Align="Align.Center" Typo="Typo.body2">End of List</MudText>
+                </MudTd>
+            </FooterContent>
+        </MudTable>
+    </MudItem>
+</MudGrid>
