@@ -115,7 +115,7 @@
                     {
                         <MudTooltip Text="@($"Move to {context.Status + 1}")">
                             <MudIconButton Icon="@Icons.Material.Filled.FastForward" Size="Size.Small" Class="ml-2"
-                                           @onclick="() => ProgressTodo(context)" />
+                                           @onclick="_ => ProgressTodo(context)" />
                         </MudTooltip>
                     }
                 </MudTd>
@@ -131,13 +131,13 @@
                     <!-- Edit Button -->
                     <MudTooltip Text="Edit">
                         <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small"
-                                       @onclick="() => EditorDTO = context.ToDTO()" />
+                                       @onclick="_ => EditorDTO = context.ToDTO()" />
                     </MudTooltip>
                     
                     <!-- Delete Button -->
                     <MudTooltip Text="Delete">
                         <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small"
-                                       @onclick="() => DeleteTodo(context)" />
+                                       @onclick="_ => DeleteTodo(context)" />
                     </MudTooltip>
                 </MudTd>
             </RowTemplate>
