@@ -151,3 +151,16 @@
         </MudTable>
     </MudItem>
 </MudGrid>
+
+<!-- Delete Confirmation Dialog -->
+<MudMessageBox @ref="deleteConfirm" Title="Are you sure?" YesText="Delete" CancelText="Cancel">
+    <!-- Message -->
+    <MessageContent>This action cannot be undone!</MessageContent>
+
+    <!-- Confirm Delete Button -->
+    <YesButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete">
+            Delete
+        </MudButton>
+    </YesButton>
+</MudMessageBox>

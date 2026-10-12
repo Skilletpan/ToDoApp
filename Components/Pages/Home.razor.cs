@@ -1,3 +1,5 @@
+using MudBlazor;
+
 using ToDoApp.Enums;
 using ToDoApp.Models;
 using ToDoApp.Models.DTOs;
@@ -32,6 +34,11 @@ public partial class Home(ITodoService todoService)
     /// The list of Todo items in the database.
     /// </summary>
     private IEnumerable<TodoModel> TodoItems = [];
+
+    /// <summary>
+    /// The Delete Confirmation dialog.
+    /// </summary>
+    private MudMessageBox? deleteConfirmDialog;
 
     /// <summary>
     /// Saves the Todo item in the editor and resets the form.
@@ -77,6 +84,9 @@ public partial class Home(ITodoService todoService)
     /// <param name="todo">The Todo item to delete.</param>
     private async Task DeleteTodo(TodoModel todo)
     {
+        // Confirm delete
+        if (await deleteConfirmDialog!.ShowAsync() == null) return;
+
         // Delete Todo item and refresh list
         await todoService.DeleteTodo(todo.ID);
         TodoItems = await todoService.FetchTodos();
