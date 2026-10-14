@@ -120,13 +120,17 @@
                 </MudTd>
 
                 <!-- Created -->
-                <MudTd DataLabel="Created">@context.Created.ToLocalTime().ToString("dd.MM.yyyy, HH:mm")</MudTd>
+                <MudTd DataLabel="Created" Style="width: 155px;">
+                    @context.Created.ToLocalTime().ToString("dd.MM.yyyy, HH:mm")
+                </MudTd>
 
                 <!-- Changed -->
-                <MudTd DataLabel="Changed">@context.Changed.ToLocalTime().ToString("dd.MM.yyyy, HH:mm")</MudTd>
+                <MudTd DataLabel="Changed" Style="width: 155px;">
+                    @context.Changed.ToLocalTime().ToString("dd.MM.yyyy, HH:mm")
+                </MudTd>
 
                 <!-- Actions -->
-                <MudTd DataLabel="Actions" Style="text-align: right;">
+                <MudTd DataLabel="Actions" Style="text-align: right; width: 90px;">
                     <!-- Edit Button -->
                     <MudTooltip Text="Edit">
                         <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small"
