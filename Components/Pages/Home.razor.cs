@@ -7,7 +7,7 @@ using ToDoApp.Services.Interfaces;
 
 namespace ToDoApp.Components.Pages;
 
-public partial class Home(ITodoService todoService)
+public partial class Home(ITodoService todoService, ISnackbar snackbar)
 {
     /// <summary>
     /// The Todo DTO to use in the editor.
@@ -59,6 +59,9 @@ public partial class Home(ITodoService todoService)
         // Save Todo item and refresh list
         await todoService.SaveTodo(dto);
         TodoItems = await todoService.FetchTodos();
+
+        // Show snackbar
+        snackbar.Add(dto.ID == null ? "To Do created" : "To Do updated", severity: Severity.Success);
     }
 
     /// <summary>
@@ -90,6 +93,9 @@ public partial class Home(ITodoService todoService)
         // Delete Todo item and refresh list
         await todoService.DeleteTodo(todo.ID);
         TodoItems = await todoService.FetchTodos();
+
+        // Show snackbar
+        snackbar.Add("To Do deleted", severity: Severity.Success);
     }
 
     /// <summary>
@@ -100,7 +106,14 @@ public partial class Home(ITodoService todoService)
     /// <summary>
     /// Fetches all Todo items from the database.
     /// </summary>
-    protected override async Task OnInitializedAsync() => TodoItems = await todoService.FetchTodos();
+    protected override async Task OnInitializedAsync()
+    {
+        // Configure Snackbar position
+        snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+
+        // Load Todo items
+        TodoItems = await todoService.FetchTodos();
+    }
 
     private struct TodoFilters
     {
